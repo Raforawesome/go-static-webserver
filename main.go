@@ -1,1 +1,8 @@
-package go_static_webserver
+package main
+
+import "fmt"
+
+func main() {
+	cfg := ReadConfig()
+	fmt.Println(cfg)
+}
