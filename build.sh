@@ -9,9 +9,10 @@ if [[ -z "$package" ]]; then
   exit 1
 fi
 package_split=(${package//\// })
-package_name=${package_split[-1]}
+#package_name=${package_split[-1]}
+package_name=${PWD##*/}
 
-platforms=("windows/amd64" "darwin/arm64" "linux/arm64" "linux/amd64")
+platforms=("windows/amd64" "windows/386" "windows/arm" "windows/arm64" "darwin/amd64" "darwin/arm64" "linux/arm64" "linux/amd64" "linux/arm" "linux/386")
 
 for platform in "${platforms[@]}"
 do
@@ -23,7 +24,7 @@ do
 		output_name+='.exe'
 	fi
 
-	env GOOS=$GOOS GOARCH=$GOARCH go build -o "bin/${output_name}" -ldflags="-s -w" $package
+	env GOOS=$GOOS GOARCH=$GOARCH go build -o "bin/${output_name}" -ldflags="-s -w" . # $package
 	if [ $? -ne 0 ]; then
    		echo 'An error has occurred! Aborting the script execution...'
 		exit 1
