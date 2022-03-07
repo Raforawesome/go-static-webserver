@@ -3,13 +3,14 @@ package main
 import (
 	"errors"
 	"fmt"
+	"git.raforaweso.me/Raforawesome/go-lists"
 	"os"
 	"strconv"
 	"strings"
 )
 
-func ReadConfig() map[uint64][2]string {
-	m := make(map[uint64][2]string)
+func ReadConfig() map[uint64]lists.StrList {
+	m := make(map[uint64]lists.StrList)
 
 	dirName, err := os.Executable()
 	if err != nil {
@@ -34,10 +35,10 @@ func ReadConfig() map[uint64][2]string {
 				panic(err)
 			}
 
-			m[port] = [2]string{
-				Ternary(strings.HasPrefix(target, "./") || strings.HasPrefix(target, "/"), "path", "url"),
-				target,
-			}
+			ls := lists.NewStrList()
+			ls.Append(Ternary(strings.HasPrefix(target, "./") || strings.HasPrefix(target, "/"), "path", "url"))
+			ls.Append(target)
+			m[port] = ls
 		}
 
 	} else if errors.Is(err, os.ErrNotExist) {
@@ -48,7 +49,11 @@ func ReadConfig() map[uint64][2]string {
 		if err != nil {
 			panic(err)
 		}
-		m[443] = [2]string{"path", "./views"}
+		//m[443] = [2]string{"path", "./views"}
+		ls := lists.NewStrList()
+		ls.Append("path")
+		ls.Append("./views")
+		m[443] = ls
 	}
 
 	return m
