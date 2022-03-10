@@ -1,14 +1,35 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 )
 
+func main() {
+	cfg := ReadConfig()
+	fmt.Println(cfg)
+
+	for port, values := range cfg {
+		var address string
+		address = "localhost:" + strconv.FormatUint(port, 10)
+
+		if values.Components[0] == "path" {
+			//fmt.Println("Starting server on " + address)
+			StartServer(address, values.Components[1])
+		}
+	}
+}
+
+func StartServer(addr string, path string) {
+	fmt.Println("Starting server on " + addr)
+	fmt.Println("Serving " + path)
+	http.Handle("/", http.FileServer(http.Dir(path)))
+	log.Fatal(http.ListenAndServe(addr, nil))
+}
+
+/*
 func main() {
 	cfg := ReadConfig()
 	fmt.Println(cfg)
@@ -37,3 +58,4 @@ func main() {
 		}
 	}
 }
+*/
